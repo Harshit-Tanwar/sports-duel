@@ -1,6 +1,10 @@
+"use-client"
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Navbar from "../components/common/Navbar";
+import Footer from "../components/common/Footer";
+import Sidebar from "../components/common/Sidebar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,7 +31,17 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-screen flex flex-col">
+        <Navbar />
+        {/* Sidebar + main content sit side by side, growing to fill remaining height */}
+        <div className="flex flex-1">
+          <Sidebar />
+          <div className="flex-1">
+            {children}
+          </div>
+        </div>
+        <Footer />
+        </body>
     </html>
   );
 }
