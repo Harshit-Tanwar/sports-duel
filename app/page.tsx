@@ -20,6 +20,7 @@ const quizzes = [
     title: "Daily Quizzical",
     description: "One Quiz a Day, Endless Rewards",
     buttonType: "primary" as const,
+    buttonLabel : "Join Now",
   },
   {
     id: 2,
@@ -27,6 +28,7 @@ const quizzes = [
     title: "Higher or Lower",
     description: "More or Less? Take the Challenge!",
     buttonType: "secondary" as const,
+    buttonLabel : "Join Now",
   },
   {
     id: 3,
@@ -34,6 +36,7 @@ const quizzes = [
     title: "General Knowledge",
     description: "More or Less? Take the Challenge!",
     buttonType: "primary" as const,
+    buttonLabel : "Join Now",
   },
 ];
 
@@ -83,10 +86,9 @@ export default function Home() {
           </div>
         </div>
          </div>
-
          
         {/* Quizzes */}
-        <CardSection heading="Quizzess" quizzes={quizzes} />
+        <CardSection heading="Quizzess" quizzes={quizzes}/>
          
         {/* Sports */}
         <div className="mt-10 px-8">
@@ -105,10 +107,8 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Games carousel — loaded client-side only */}
         <GamesSlider />
-
-        {/* Hot Contest carousel — loaded client-side only */}
+       
         <HotcontestSlider/>
       </section>
     </main>
