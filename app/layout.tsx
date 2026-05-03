@@ -1,4 +1,3 @@
-"use-client"
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -31,15 +30,12 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-screen flex flex-col">
+      <body className="min-h-screen   flex flex-col">
         <Navbar />
         {/* Sidebar + main content sit side by side, growing to fill remaining height */}
-        <div className="flex flex-1">
-          <Sidebar />
-          <div className="flex-1">
+          <div className="">
             {children}
           </div>
-        </div>
         <Footer />
         </body>
     </html>

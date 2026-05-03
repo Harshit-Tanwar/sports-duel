@@ -49,7 +49,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="w-full bg-[#050505] text-white">
+    <footer className="bg-[#050505] text-white">
       <div className="max-w-7xl mx-auto px-8 py-10">
         <div className="flex flex-col lg:flex-row gap-10">
           <div className="flex flex-col gap-5">

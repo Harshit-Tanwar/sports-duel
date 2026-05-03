@@ -1,5 +1,6 @@
 import Image, { StaticImageData } from "next/image";
 import Button from "../common/Button";
+import { CardLayout } from "./CardLayout";
 
 interface QuizCardProps {
   image: StaticImageData | string;
@@ -19,8 +20,8 @@ export default function QuizCard({
   buttonLabel = "Start Now",
 }: QuizCardProps) {
   return (
-    <div
-      className={`flex items-center bg-[#0E1012] rounded-2xl px-3 py-2 shadow-lg shadow-cyan-600`}
+    <CardLayout
+      className={`flex items-center px-3 py-2 `}
     >
       <div className="w-32 h-32 shrink-0">
         <Image src={image} alt={imageAlt} className="w-full h-full object-contain" />
@@ -31,6 +32,6 @@ export default function QuizCard({
         <p className="text-sm text-zinc-300">{description}</p>
         <Button width={48} type={buttonType} title={buttonLabel} />
       </div>
-    </div>
+    </CardLayout>
   );
 }

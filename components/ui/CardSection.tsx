@@ -18,11 +18,11 @@ interface QuizSectionProps {
 
 export default function QuizSection({ heading = "Quizzes", quizzes }: QuizSectionProps) {
   return (
-    <div className="mt-5 shadow-lg">
+    <div className="mt-5 shadow-lg px-8">
       <h1 className="text-3xl font-semibold">{heading}</h1>
       <div className="flex flex-wrap gap-4 mt-4">
         {quizzes.map((quiz) => (
-          <QuizCard 
+          <QuizCard
             key={quiz.id}
             image={quiz.image}
             imageAlt={quiz.imageAlt}
