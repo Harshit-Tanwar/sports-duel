@@ -1,7 +1,3 @@
-import QuizCard from "@/components/ui/Card";
-import daily from "@/public/images/daily.png";
-import highlow from "@/public/images/footer/highlow.png";
-import book from "@/public/images/footer/book.png";
 import Image, { StaticImageData } from "next/image";
 import { CardLayout } from "./CardLayout";
 import Button from "../common/Button";
@@ -21,7 +17,7 @@ interface QuizSectionProps {
   quizzes : Quiz[];
 }
 
-export default function QuizSection({
+export default function CardSection({
   heading = "Quizzes",
   quizzes,
 }: QuizSectionProps) {
