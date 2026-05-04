@@ -6,7 +6,7 @@ const Sidebar = () => {
   ];
 
   return (
-    <aside className="flex flex-col items-center gap-3 pt-3 w-34 min-h-full bg-linear-to-b to-[#0098FF] from-[#00233B] shrink-0 p-2 ">
+    <aside className="lg:flex flex-col items-center gap-3 pt-3 lg:w-34 hidden min-h-full bg-linear-to-b to-[#0098FF] from-[#00233B] shrink-0 p-2 ">
       {items.map(({ label }) => (
         <button
           key={label}
