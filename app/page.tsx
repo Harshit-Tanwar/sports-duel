@@ -70,7 +70,7 @@ export default function Home() {
           <Image
             src={image1}
             alt="Daily quiz banner background"
-            className="w-full h-[200px] md:h-[470px] object-cover opacity-30 rounded-2xl"
+            className="w-full h-50 md:h-[470px] object-cover opacity-30 rounded-2xl"
             priority
           />
           <div className="absolute inset-0 flex flex-col justify-center px-6 md:px-28 gap-2 md:gap-4">
@@ -79,11 +79,11 @@ export default function Home() {
               <br />
               Play Smart, Win Big!
             </h1>
-            <p className="hidden md:block text-gray-200 text-sm leading-relaxed max-w-[500px] drop-shadow">
+            <p className="hidden md:block text-gray-200 text-sm leading-relaxed max-w-125 drop-shadow">
               Challenge yourself every day with fresh questions. Play smart,
               climb the leaderboard, and win exciting rewards!
             </p>
-            <p className="md:hidden text-gray-200 text-xs leading-relaxed max-w-[260px] drop-shadow">
+            <p className="md:hidden text-gray-200 text-xs leading-relaxed max-w-65 drop-shadow">
               Challenge yourself every day with fresh questions. Play smart, climb
               the leaderboard, and win exciting rewards!
             </p>

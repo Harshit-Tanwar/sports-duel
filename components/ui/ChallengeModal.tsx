@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import ModalButton from "@/components/ui/ModalButton";
 
 interface ChallengeModalProps {
@@ -55,7 +56,9 @@ export default function ChallengeModal({ isOpen, onClose }: ChallengeModalProps)
         <p className="text-white font-semibold text-sm mb-3">ℹ️ Quick Links:</p>
         <div className="grid grid-cols-2 gap-3">
           <ModalButton title="Get More Gems" />
-          <ModalButton title="Pay & Enter Contest" type="primary" />
+          <Link href="/games/general-knowledge/question-area" className="w-full">
+            <ModalButton title="Pay & Enter Contest" type="primary" fullWidth />
+          </Link>
         </div>
       </div>
     </div>

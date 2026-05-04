@@ -83,7 +83,7 @@ const GamesSlider = () => {
       >
         {cardData.map((card, idx) => (
           <SwiperSlide key={idx}>
-            <CardLayout className="overflow-hidden mb-2 w-[220px] ">
+            <CardLayout className="overflow-hidden mb-2 w-55 ">
               <Image src={card.img} alt={card.title} className="w-full" />
               <div className="px-3 md:px-4 py-3 flex flex-col gap-2 md:gap-3">
                 <h1 className="text-lg md:text-2xl font-bold tracking-wider">{card.title}</h1>

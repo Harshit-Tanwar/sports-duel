@@ -59,7 +59,7 @@ const HotcontestSlider = () => {
           <SwiperSlide key={idx}>
             <CardLayout className="flex overflow-hidden mb-2">
               {/* Left — image */}
-              <div className="w-34 md:w-64 lg:w-75 shrink-0">
+              <div className="w-34 md:w-64 lg:w-75 h-72 shrink-0">
                 <Image
                   src={contest.img}
                   alt={contest.title}
