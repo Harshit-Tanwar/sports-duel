@@ -1,5 +1,4 @@
 "use client";
-
 import Link from "next/link";
 import ModalButton from "@/components/ui/ModalButton";
 
@@ -14,12 +13,12 @@ export default function ChallengeModal({ isOpen, onClose }: ChallengeModalProps)
   return (
     /* Backdrop */
     <div
-      className="absolute inset-0 z-50 flex items-center justify-center bg-black/30 "
+      className="absolute top-50 inset-0 z-50 flex items-center justify-center "
       onClick={onClose}
     >
       {/* Modal box */}
       <div
-        className="relative w-100 rounded-2xl p-4 bg-linear-to-br from-[#0098FF] to-[#000d24]  border-5 border-blue-400 "
+        className="relative lg:w-100 w-80 rounded-2xl p-4 bg-linear-to-br from-[#0098FF] to-[#000d24]  border-5 border-blue-400 "
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close button */}

@@ -39,13 +39,13 @@ export default function CentreCarousel({
           loopAdditionalSlides={items.length}
           centeredSlides
           initialSlide={0}
-          slidesPerView={3}
-          spaceBetween={20}
+          slidesPerView={2}
+          spaceBetween={5}
           allowTouchMove
           className="w-full overflow-hidden"
           breakpoints={{
-            480 :{slidesPerView :3 , spaceBetween :1},
-            640: { slidesPerView: 4, spaceBetween: 16 },
+            // 480 :{slidesPerView :2 , spaceBetween :1},
+            640: { slidesPerView: 4, spaceBetween: 16  },
             1024: { slidesPerView: 5, spaceBetween: 20 },
           }}
         >
@@ -55,11 +55,11 @@ export default function CentreCarousel({
                 {({ isActive }) => (
                   <div
                     className={`
-                       rounded-2xl transition-all overflow-hidden rounded-b-2xl duration-300 cursor-pointer mx-1 mt-10 mb-2
+                       rounded-2xl transition-all overflow-hidden rounded-b-2xl duration-300 cursor-pointer mx-1 mt-10 lg:mb-2
                       ${
                         isActive
-                          ? "lg:h-68 h-34 ring-2 ring-[#0098FF] lg:-top-8 absolute shadow-[0_0_24px_rgba(0,152,255,0.5)]"
-                          : "lg:h-68 h-34"
+                          ? "lg:h-68 h-44 ring-2 ring-[#0098FF] lg:-top-8 absolute shadow-[0_0_24px_rgba(0,152,255,0.5)]"
+                          : "lg:h-68 h-44"
                       } 
                     `}
                   >
