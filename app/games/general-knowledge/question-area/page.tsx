@@ -1,6 +1,8 @@
 
 import QuizButton from "@/components/ui/QuizButton";
 import { Gem, Star, Zap } from "lucide-react";
+import Image from "next/image";
+import coach from "@/public/images/Slider/coach.png"
 
 const answers = [
   "Bayern Munich",
@@ -47,6 +49,7 @@ export default function QuestionAreaPage() {
             </p>
           </div>
           <div className="relative h-80 bg-zinc-500">
+            <Image src={coach} alt="" priority className="h-full w-full object-cover"/>
             {/* Timer badge */}
             <div className="absolute bottom-3 right-3 z-20 w-12 h-12 rounded-full bg-red-500 flex items-center justify-center shadow-lg">
               <span className="text-white text-xs font-bold">60s</span>

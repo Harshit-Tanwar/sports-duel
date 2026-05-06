@@ -12,6 +12,8 @@ import GamesSlider from "@/components/ui/GamesSlider";
 import HotcontestSlider from "@/components/ui/HotcontestSlider";
 import Sidebar from "@/components/common/Sidebar";
 
+import EnhancedSidebar from "@/components/common/EnhancedSidebar";
+
 const quizzes = [
   {
     id: 1,
@@ -59,11 +61,11 @@ const puzzles = [
 ];
 
 export default function Home() {
+
+  
   return (
     <main className="flex">
-      {/* Sidebar — hidden on mobile */}
-      <Sidebar />
-
+     <Sidebar/>
       <section className="flex-1 min-w-0">
         {/* Hero banner */}
         <div className="relative w-full p-4 md:p-8">

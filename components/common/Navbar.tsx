@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import logo from "@/public/images/logo.png";
-import {Bell , Store , Gift ,ChevronDown ,Menu} from "lucide-react"
+import { Bell, Store, Gift, ChevronDown, Menu } from "lucide-react";
 import { RiVipDiamondFill } from "react-icons/ri";
 
 interface DropdownItem { name: string; href: string; }
@@ -14,10 +14,9 @@ interface NavDropdownProps {
   label: string; href: string;
   items?: DropdownItem[];
   pathname: string;
-  onNavigate?: () => void;
 }
 
-const NavDropdown = ({ label, href, items = [], pathname, onNavigate }: NavDropdownProps) => {
+const NavDropdown = ({ label, href, items = [], pathname }: NavDropdownProps) => {
   const [open, setOpen] = useState(false);
   const isActive = pathname === href || pathname.startsWith(href + "/");
 
@@ -25,9 +24,8 @@ const NavDropdown = ({ label, href, items = [], pathname, onNavigate }: NavDropd
     <div className="relative" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
       <Link
         href={href}
-        onClick={onNavigate}
         className={`flex items-center gap-1 text-sm font-medium transition-colors px-1 py-1 ${
-          isActive ? "text-white border-b-2 border-[#0098FF]" : "text-gray-200 hover:text-white"
+          isActive ? "text-white" : "text-gray-200 hover:text-white"
         }`}
       >
         {label}
@@ -37,12 +35,12 @@ const NavDropdown = ({ label, href, items = [], pathname, onNavigate }: NavDropd
       </Link>
 
       {open && items.length > 0 && (
-        <div className="absolute top-full left-0 mt-1 w-44 bg-[#0f1b3d] border border-[#1e3a6e] rounded-md shadow-xl z-50 py-1">
+        <div className="absolute top-full left-0 mt-1 w-44 bg-secondary-gradient p-1  border border-[#1e3a6e] rounded-md shadow-xl z-50 py-1">
           {items.map((item) => (
             <Link
-              key={item.href} href={item.href} onClick={onNavigate}
-              className={`block px-4 py-2 text-sm transition-colors ${
-                pathname === item.href ? "text-white bg-[#1a2f5a]" : "text-gray-300 hover:text-white hover:bg-[#1a2f5a]"
+              key={item.href} href={item.href}
+              className={`block px-4 py-2 rounded-sm  mt-1 text-sm transition-colors ${
+                pathname === item.href ? "text-white bg-primary-gradient" : "text-gray-300 hover:text-white"
               }`}
             >
               {item.name}
@@ -54,9 +52,9 @@ const NavDropdown = ({ label, href, items = [], pathname, onNavigate }: NavDropd
   );
 };
 
-const NavLink = ({ href, label, pathname, onNavigate }: { href: string; label: string; pathname: string; onNavigate?: () => void }) => (
+const NavLink = ({ href, label, pathname }: { href: string; label: string; pathname: string }) => (
   <Link
-    href={href} onClick={onNavigate}
+    href={href}
     className={`text-sm font-medium transition-colors px-1 py-1 ${
       pathname === href ? "text-white border-b-2 border-[#0098FF]" : "text-gray-200 hover:text-white"
     }`}
@@ -110,14 +108,12 @@ const UserMenu = () => {
   );
 };
 
-const Navbar = () => {
+const Navbar = ({ onOpenSidebar }: { onOpenSidebar?: () => void }) => {
   const pathname = usePathname();
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const closeMobile = () => setMobileOpen(false);
 
   const navLinks = (
     <>
-      <NavDropdown label="Games" href="/games" pathname={pathname} onNavigate={closeMobile}
+      <NavDropdown label="Games" href="" pathname={pathname}
         items={[
           { name: "Prediction", href: "/games/prediction" },
           { name: "Eliminator", href: "/games/eliminator" },
@@ -125,21 +121,21 @@ const Navbar = () => {
           { name: "General Knowledge", href: "/games/general-knowledge" },
         ]}
       />
-      <NavLink href="/my-games" label="My Games" pathname={pathname} onNavigate={closeMobile} />
-      <NavDropdown label="Create" href="/create" pathname={pathname} onNavigate={closeMobile}
+      <NavLink href="/my-games" label="My Games" pathname={pathname} />
+      <NavDropdown label="Create" href="" pathname={pathname}
         items={[
           { name: "New Game", href: "/create/new-game" },
           { name: "Templates", href: "/create/templates" },
           { name: "Draft", href: "/create/draft" },
         ]}
       />
-      <NavLink href="/wallet" label="Wallet" pathname={pathname} onNavigate={closeMobile} />
-      <NavLink href="/casino" label="Casino" pathname={pathname} onNavigate={closeMobile} />
+      <NavLink href="/wallet" label="Wallet" pathname={pathname} />
+      <NavLink href="/casino" label="Casino" pathname={pathname} />
     </>
   );
 
   return (
-    <header className="bg-linear-to-r from-[#0f1f45] to-blue- border-b border-[#0f1f45] sticky top-0 z-40">
+    <header className="bg-linear-to-r from-[#0f1f45] to-blue- border-b border-[#0f1f45] sticky top-0 z-20">
       <nav className="flex items-center justify-between px-4 md:px-6 h-14 md:h-16" aria-label="Main navigation">
 
         {/* Left — logo + desktop nav */}
@@ -154,12 +150,12 @@ const Navbar = () => {
         {/* Right — icons + user */}
         <div className="flex items-center gap-3 md:gap-4 text-gray-300">
           <button className="hidden md:block hover:text-white transition-colors" aria-label="Display settings">
-            <span className="relative text-xl"><Store/></span>
+            <span className="relative text-xl"><Store /></span>
           </button>
 
           <button className="hover:text-white transition-colors" aria-label="Bonuses">
             <span className="relative text-xl">
-              <Gift/>
+              <Gift />
               <span className="absolute -top-1.5 -right-1.5 bg-yellow-400 text-black text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center leading-none">3</span>
             </span>
           </button>
@@ -173,23 +169,16 @@ const Navbar = () => {
 
           <UserMenu />
 
-          {/* Hamburger — mobile only */}
+          {/* Breadcrumb/sidebar icon — mobile only */}
           <button
-            className="md:hidden hover:text-white transition-colors text-xl"
-            onClick={() => setMobileOpen((v) => !v)}
-            aria-label="Toggle menu"
+            className="md:hidden hover:text-white transition-colors"
+            onClick={onOpenSidebar}
+            aria-label="Open sidebar"
           >
-            {mobileOpen ? <Menu/> : <Menu/>}
+            <Menu size={22} />
           </button>
         </div>
       </nav>
-
-      {/* Mobile drawer */}
-      {mobileOpen && (
-        <div className="md:hidden bg-[#0f1b3d] border-t border-[#1e3a6e] px-5 py-4 flex flex-col gap-4">
-          {navLinks}
-        </div>
-      )}
     </header>
   );
 };

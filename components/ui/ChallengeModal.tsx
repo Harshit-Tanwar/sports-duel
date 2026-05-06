@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import ModalButton from "@/components/ui/ModalButton";
+import { Gem } from "lucide-react";
 
 interface ChallengeModalProps {
   isOpen: boolean;
@@ -13,7 +14,7 @@ export default function ChallengeModal({ isOpen, onClose }: ChallengeModalProps)
   return (
     /* Backdrop */
     <div
-      className="absolute top-50 inset-0 z-50 flex items-center justify-center "
+      className="absolute top-50 lg:top-20 inset-0 z-50 flex items-center justify-center "
       onClick={onClose}
     >
       {/* Modal box */}
@@ -32,7 +33,7 @@ export default function ChallengeModal({ isOpen, onClose }: ChallengeModalProps)
 
         {/* Header */}
         <div className="flex items-center gap-2 mb-4">
-          <span className="text-4xl">💎</span>
+          <span className="text-4xl text-blue-200"><Gem/></span>
           <h2 className="text-xl font-extrabold text-white">Use 2 Gems For Entry</h2>
         </div>
 

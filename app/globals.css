@@ -29,4 +29,7 @@ body {
   .bg-primary-gradient {
     @apply bg-linear-to-br from-[#0098FF] to-[#00233B];
   }
+  .bg-secondary-gradient {
+    @apply bg-linear-to-br from-[#003152] to-[#000000];
+  }
 }

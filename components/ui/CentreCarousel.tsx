@@ -58,7 +58,7 @@ export default function CentreCarousel({
                        rounded-2xl transition-all overflow-hidden rounded-b-2xl duration-300 cursor-pointer mx-1 mt-10 lg:mb-2
                       ${
                         isActive
-                          ? "lg:h-68 h-44 ring-2 ring-[#0098FF] lg:-top-8 absolute shadow-[0_0_24px_rgba(0,152,255,0.5)]"
+                          ? "lg:h-68 h-44 ring-2 ring-[#0098FF] lg:-top-8 absolute"
                           : "lg:h-68 h-44"
                       } 
                     `}
@@ -69,7 +69,7 @@ export default function CentreCarousel({
                       <div className="absolute bottom-1 left-0 right-0 lg:px-4 pb-2">
                         <button
                           onClick={() => onChallenge?.(item)}
-                          className="w-full  lg:py-2 border border-white text-white lg:text-sm text-xs font-semibold rounded-lg bg-black/40 hover:bg-white hover:text-black transition-colors backdrop-blur-sm"
+                          className="w-full  lg:py-2 border border-white text-white lg:text-sm text-xs font-semibold rounded-lg bg-primary-gradient hover:bg-white hover:text-black transition-colors backdrop-blur-sm"
                         >
                           Take The Challenge
                         </button>
