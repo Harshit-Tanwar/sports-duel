@@ -23,6 +23,7 @@ const NavDropdown = ({ label, href, items = [], pathname }: NavDropdownProps) =>
   return (
     <div className="relative" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
       <Link
+       prefetch
         href={href}
         className={`flex items-center gap-1 text-sm font-medium transition-colors px-1 py-1 ${
           isActive ? "text-white" : "text-gray-200 hover:text-white"
@@ -38,6 +39,7 @@ const NavDropdown = ({ label, href, items = [], pathname }: NavDropdownProps) =>
         <div className="absolute top-full left-0 mt-1 w-44 bg-secondary-gradient p-1  border border-[#1e3a6e] rounded-md shadow-xl z-50 py-1">
           {items.map((item) => (
             <Link
+              prefetch
               key={item.href} href={item.href}
               className={`block px-4 py-2 rounded-sm  mt-1 text-sm transition-colors ${
                 pathname === item.href ? "text-white bg-primary-gradient" : "text-gray-300 hover:text-white"
@@ -73,9 +75,9 @@ const UserMenu = () => {
   ];
 
   return (
-    <div className="relative" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
+    <div className="relative lg:block hidden" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
       <button className="flex items-center gap-2">
-        <div className="w-7 h-7 rounded-full bg-linear-to-b from-orange-400 to-pink-500 flex items-center justify-center text-white text-xs font-bold shrink-0">
+        <div className="w-7 h-7  rounded-full bg-linear-to-b from-orange-400 to-pink-500 flex items-center justify-center text-white text-xs font-bold shrink-0">
           JW
         </div>
         {/* Hide name/balance on mobile */}
@@ -94,7 +96,7 @@ const UserMenu = () => {
       </button>
 
       {open && (
-        <div className="absolute top-full right-0 mt-1 w-44 bg-[#0f1b3d] border border-[#1e3a6e] rounded-md shadow-xl z-50 py-1">
+        <div className="absolute top-full right-0 mt-1 w-44 bg-secondary-gradient border border-[#1e3a6e] rounded-md shadow-xl z-50 py-1">
           {userMenuItems.map((item) => (
             <Link key={item.href} href={item.href}
               className="block px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-[#1a2f5a] transition-colors"

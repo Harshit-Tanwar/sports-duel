@@ -59,9 +59,7 @@ const puzzles = [
   },
 ];
 
-export default function Home() {
-
-  
+export default function Home() {  
   return (
     <main className="flex">
      <Sidebar/>
@@ -69,10 +67,10 @@ export default function Home() {
         {/* Hero banner */}
         <div className="relative w-full p-4 md:p-8">
           <Image
+            preload
             src={image1}
-            alt="Daily quiz banner background"
-            className="w-full h-50 md:h-[470px] object-cover opacity-30 rounded-2xl"
-            priority
+            alt="Daily quiz banner"
+            className="w-full h-50 md:h-117.5 object-cover opacity-30 rounded-2xl"
           />
           <div className="absolute inset-0 flex flex-col justify-center px-6 md:px-28 gap-2 md:gap-4">
             <h1 className="text-2xl md:text-5xl font-extrabold leading-tight text-white drop-shadow-lg">

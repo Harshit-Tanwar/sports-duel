@@ -8,11 +8,12 @@ interface QuizButtonProps {
   icon?: ReactNode;
   onClick?: () => void;
   className?: string;
+  bgColor?: string;
 }
 
 const variantStyles: Record<QuizButtonVariant, string> = {
   answer:
-    "bg-primary-gradient  text-base rounded-xl py-4 px-6 w-full",
+    "bg-blue-500 rounded-xl py-4 px-6 w-full",
   freeze:
     "bg-linear-to-br from-[#018488] to-[#00B2A9] text-sm rounded-full py-2.5 px-5",
   pass:
@@ -29,10 +30,12 @@ export default function QuizButton({
   icon,
   onClick,
   className = "",
+  bgColor,
 }: QuizButtonProps) {
   return (
     <button
       onClick={onClick}
+      style={bgColor ? { background: bgColor } : undefined}
       className={`flex items-center border border-white hover:brightness-110 text-white font-semibold  justify-center gap-2 transition-all ${variantStyles[variant]} ${className}`}
     >
       {icon && <span className="text-lg">{icon}</span>}
