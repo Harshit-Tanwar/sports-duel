@@ -12,7 +12,6 @@ import GamesSlider from "@/components/ui/GamesSlider";
 import HotcontestSlider from "@/components/ui/HotcontestSlider";
 import Sidebar from "@/components/common/Sidebar";
 
-import EnhancedSidebar from "@/components/common/EnhancedSidebar";
 
 const quizzes = [
   {
@@ -108,6 +107,7 @@ export default function Home() {
                   src={puzzle.image}
                   alt=""
                   className="w-24 h-24 md:w-55 md:h-52 object-cover shrink-0"
+                  priority
                 />
                 <div className="space-y-2 md:space-y-3 py-3 px-3 md:py-4 md:px-4 border-l border-[#0098FF]">
                   <h1 className="text-lg md:text-2xl font-semibold">{puzzle.title}</h1>

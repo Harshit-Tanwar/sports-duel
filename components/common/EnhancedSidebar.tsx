@@ -6,7 +6,6 @@ interface SidebarProps {
   isOpen: boolean;
   onToggle: () => void;
 }
-
 interface NavItem {
   name: string;
   href: string;

@@ -63,7 +63,7 @@ export default function CentreCarousel({
                       } 
                     `}
                   >
-                    <Image src={item.bg} alt="" className="w-full h-full object-cover" />
+                    <Image src={item.bg} alt="" className="w-full h-full object-cover" priority />
                     {/* Button — center card only */}
                     {isActive && (
                       <div className="absolute bottom-1 left-0 right-0 lg:px-4 pb-2">

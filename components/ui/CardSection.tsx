@@ -32,13 +32,14 @@ export default function CardSection({
                 src={quiz.image}
                 alt='Image not found'
                 className="w-full h-full object-contain"
+                priority
               />
             </div>
 
             <div className="space-y-2 pl-2 border-l border-blue-800">
               <h2 className="font-bold">{quiz.title}</h2>
               <p className="text-sm text-zinc-300">{quiz.description}</p>
-              <Button width={48} type={quiz.buttonType} title={quiz.buttonLabel} />
+              <Button type={quiz.buttonType} title={quiz.buttonLabel} />
             </div>
           </CardLayout>
         ))}
