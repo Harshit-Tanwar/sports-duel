@@ -5,9 +5,9 @@ import star from "@/public/images/icons/star.png";
 import zap from "@/public/images/icons/zap.png";
 import diamond from "@/public/images/icons/diamond.png";
 import checkBox from "@/public/images/icons/check-box.png";
-import freeze from "@/public/images/icons/freeze.png"
-import pass from "@/public/images/icons/pass.png"
-import pause from "@/public/images/icons/pause.png"
+import freeze from "@/public/images/icons/freeze.png";
+import pass from "@/public/images/icons/pass.png";
+import pause from "@/public/images/icons/pause.png";
 import Image from "next/image";
 import coach from "@/public/images/Slider/coach.png";
 import { Questions } from "@/utils/dummyQuizData";
@@ -24,16 +24,30 @@ export default function QuestionAreaPage() {
   const [gems, setGems] = useState(20);
   const [isFinished, setIsFinished] = useState(false);
 
+  // Power-up used counts (for summary)
+  const [freezeUsed, setFreezeUsed] = useState(0);
+  const [passUsed, setPassUsed] = useState(0);
+  const [pauseUsed, setPauseUsed] = useState(0);
+
+  const [freezeActive, setFreezeActive] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const [activePowerUp, setActivePowerUp] = useState<
+    "freeze" | "pass" | "pause" | null
+  >(null);
+
   const currentQuestion = Questions[currentIndex];
   const totalQuestions = Questions.length;
 
   // Ref to block double-advances (timer + click racing each other)
   const Ref = useRef(false);
 
-  // Go to next question — guarded so it can only fire once per question
   const goToNext = () => {
     if (Ref.current) return;
     Ref.current = true;
+
+    setFreezeActive(false);
+    setIsPaused(false);
+    setActivePowerUp(null);
 
     setCurrentIndex((prev) => {
       if (prev + 1 >= totalQuestions) {
@@ -51,15 +65,21 @@ export default function QuestionAreaPage() {
     Ref.current = false;
   }, [currentIndex]);
 
-  // Timer — uses a plain ref for countdown so it never causes stale-closure issues
+  // Keep a ref in sync with isPaused so the interval can read latest value
+  const isPausedRef = useRef(false);
+  useEffect(() => {
+    isPausedRef.current = isPaused;
+  }, [isPaused]);
+
+  // Timer — uses a plain local counter to avoid stale-closure issues
   useEffect(() => {
     if (isFinished) return;
 
-    // Local mutable counter — no state reads inside the interval
     let remaining = Duration;
     setTimeLeft(Duration);
 
     const interval = setInterval(() => {
+      if (isPausedRef.current) return; // skip tick while paused
       remaining -= 1;
       setTimeLeft(remaining);
 
@@ -70,7 +90,6 @@ export default function QuestionAreaPage() {
     }, 1000);
 
     return () => clearInterval(interval);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentIndex, isFinished]);
 
   const handleOptionClick = (option: string) => {
@@ -84,10 +103,35 @@ export default function QuestionAreaPage() {
       setStreak((prev) => prev + 1);
       setGems((prev) => prev + 2);
     } else {
-      setStreak(0);
+      // Only reset streak if freeze is NOT active
+      if (!freezeActive) {
+        setStreak(0);
+      }
     }
-    // Auto-advance after 1.5s so user can see green/red
     setTimeout(() => goToNext(), 1500);
+  };
+
+  // Power-up handlers
+  const handleFreeze = () => {
+    if (activePowerUp !== null || selectedOption !== null) return;
+    setActivePowerUp("freeze");
+    setFreezeActive(true);
+    setFreezeUsed((prev) => prev + 1);
+  };
+
+  const handlePass = () => {
+    if (activePowerUp !== null || selectedOption !== null) return;
+    setActivePowerUp("pass");
+    setPassUsed((prev) => prev + 1);
+    setTimeout(() => goToNext(), 300);
+  };
+
+  const handlePause = () => {
+    if (activePowerUp !== null || selectedOption !== null) return;
+    setActivePowerUp("pause");
+    setIsPaused(true);
+    setPauseUsed((prev) => prev + 1);
+    setTimeout(() => setIsPaused(false), 5000);
   };
   const handlePlayAgain = () => {
     setCurrentIndex(0);
@@ -97,6 +141,13 @@ export default function QuestionAreaPage() {
     setStreak(0);
     setGems(20);
     setIsFinished(false);
+    setRightAnswer(0);
+    setFreezeUsed(0);
+    setPassUsed(0);
+    setPauseUsed(0);
+    setFreezeActive(false);
+    setIsPaused(false);
+    setActivePowerUp(null);
   };
 
   // Option color
@@ -123,8 +174,11 @@ export default function QuestionAreaPage() {
   const results = [
     { id: 1, icon: star, name: "Final Score", entry: score },
     { id: 2, icon: zap, name: "Longest Streak", entry: streak },
-    { id: 4, icon: diamond, name: "Gems", entry: gems },
-    { id: 5, icon: checkBox, name: "Correct Answer", entry: rightAnswer },
+    { id: 3, icon: diamond, name: "Gems", entry: gems },
+    { id: 4, icon: checkBox, name: "Correct Answers", entry: rightAnswer },
+    { id: 5, icon: freeze, name: "Freeze Used", entry: freezeUsed },
+    { id: 6, icon: pass, name: "Pass Used", entry: passUsed },
+    { id: 7, icon: pause, name: "Pause Used", entry: pauseUsed },
   ];
 
   return (
@@ -149,17 +203,15 @@ export default function QuestionAreaPage() {
               ))}
             </div>
             <div className="flex gap-2">
-            <button
-              className="bg-blue-500  hover:bg-[#0060cc] border border-white text-white font-semibold py-2 px-10 rounded-xl transition-all w-full"
-            >
-              LeaderBoeard
-            </button>
-            <button
-              onClick={handlePlayAgain}
-              className="bg-blue-500  hover:bg-[#0060cc] border border-white text-white font-semibold py-2 px-10 rounded-xl transition-all w-full"
-            >
-              Play Again
-            </button>
+              <button className="bg-blue-500  hover:bg-[#0060cc] border border-white text-white font-semibold py-2 px-10 rounded-xl transition-all w-full">
+                LeaderBoeard
+              </button>
+              <button
+                onClick={handlePlayAgain}
+                className="bg-blue-500  hover:bg-[#0060cc] border border-white text-white font-semibold py-2 px-10 rounded-xl transition-all w-full"
+              >
+                Play Again
+              </button>
             </div>
           </div>
         </div>
@@ -174,12 +226,18 @@ export default function QuestionAreaPage() {
           {/* Left cards */}
           <div className="flex flex-col gap-3 shrink-0">
             {/* Streak */}
-            <div className="rounded-xl border border-[#1e3a6e] bg-primary-gradient px-4 py-3 flex items-center justify-between gap-10 min-w-22.5">
+            <div
+              className={`rounded-xl border ${freezeActive ? "border-cyan-400" : "border-[#1e3a6e]"} bg-primary-gradient px-4 py-3 flex items-center justify-between gap-10 min-w-22.5`}
+            >
               <div>
                 <p className="text-white text-2xl font-bold leading-none">
                   {streak}
                 </p>
-                <p className="text-zinc-400 text-xs mt-1">Streak</p>
+                <p
+                  className={`text-xs mt-1 ${freezeActive ? "text-cyan-400" : "text-zinc-400"}`}
+                >
+                  {freezeActive ? "Frozen 🧊" : "Streak"}
+                </p>
               </div>
               <Image src={zap} width={40} alt="" />
             </div>
@@ -217,11 +275,19 @@ export default function QuestionAreaPage() {
               />
               {/* Timer badge */}
               <div
-                className={`absolute bottom-2 right-3 z-30 w-16 h-16 rounded-full ${timerColor} flex items-center justify-center shadow-lg transition-colors duration-500`}
+                className={`absolute bottom-2 right-3 z-30 w-16 h-16 rounded-full ${isPaused ? "bg-blue-500" : timerColor} flex flex-col items-center justify-center shadow-lg transition-colors duration-500`}
               >
-                <span className="text-white text-xs font-bold">
-                  {timeLeft}s
-                </span>
+                {isPaused ? (
+                  <>
+                    <span className="text-white text-[10px] font-bold leading-none">
+                      PAUSED
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-white text-xs font-bold">
+                    {timeLeft}s
+                  </span>
+                )}
               </div>
             </div>
           </div>
@@ -271,9 +337,39 @@ export default function QuestionAreaPage() {
 
           {/* Power-up buttons */}
           <div className="flex items-center justify-center gap-4 mt-4 flex-wrap ">
-            <QuizButton title="Streak Freeze" variant="freeze" icon={freeze}/>
-            <QuizButton title="Pass" variant="pass" icon={pass}  />
-            <QuizButton title="5-Second Pause" variant="pause" icon={pause}/>
+            <QuizButton
+              title="Streak Freeze"
+              variant="freeze"
+              icon={freeze}
+              onClick={handleFreeze}
+              className={
+                activePowerUp !== null || selectedOption !== null
+                  ? "opacity-40 cursor-not-allowed"
+                  : "cursor-pointer"
+              }
+            />
+            <QuizButton
+              title="Pass"
+              variant="pass"
+              icon={pass}
+              onClick={handlePass}
+              className={
+                activePowerUp !== null || selectedOption !== null
+                  ? "opacity-40 cursor-not-allowed"
+                  : "cursor-pointer"
+              }
+            />
+            <QuizButton
+              title={isPaused ? "Resuming..." : "5-Second Pause"}
+              variant="pause"
+              icon={pause}
+              onClick={handlePause}
+              className={
+                activePowerUp !== null || selectedOption !== null
+                  ? "opacity-40 cursor-not-allowed"
+                  : "cursor-pointer"
+              }
+            />
           </div>
         </div>
       </main>
