@@ -1,3 +1,4 @@
+import Image, { StaticImageData } from "next/image";
 import { ReactNode } from "react";
 
 type QuizButtonVariant = "answer" | "freeze" | "pass" | "pause" | "token";
@@ -5,10 +6,9 @@ type QuizButtonVariant = "answer" | "freeze" | "pass" | "pause" | "token";
 interface QuizButtonProps {
   title: string;
   variant?: QuizButtonVariant;
-  icon?: ReactNode;
+  icon?: StaticImageData | string;
   onClick?: () => void;
   className?: string;
-  bgColor?: string;
 }
 
 const variantStyles: Record<QuizButtonVariant, string> = {
@@ -30,15 +30,13 @@ export default function QuizButton({
   icon,
   onClick,
   className = "",
-  bgColor,
 }: QuizButtonProps) {
   return (
     <button
       onClick={onClick}
-      style={bgColor ? { background: bgColor } : undefined}
       className={`flex items-center border border-white hover:brightness-110 text-white font-semibold  justify-center gap-2 transition-all ${variantStyles[variant]} ${className}`}
-    >
-      {icon && <span className="text-lg">{icon}</span>}
+    > 
+       {icon && <Image width={24} src={icon} alt="" />}
       {title}
     </button>
   );
