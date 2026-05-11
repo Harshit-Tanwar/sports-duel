@@ -23,7 +23,6 @@ const NavDropdown = ({ label, href, items = [], pathname }: NavDropdownProps) =>
   return (
     <div className="relative" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
       <Link
-       prefetch
         href={href}
         className={`flex items-center gap-1 text-sm font-medium transition-colors px-1 py-1 ${
           isActive ? "text-white" : "text-gray-200 hover:text-white"
@@ -39,7 +38,6 @@ const NavDropdown = ({ label, href, items = [], pathname }: NavDropdownProps) =>
         <div className="absolute top-full left-0 mt-1 w-44 bg-secondary-gradient p-1  border border-[#1e3a6e] rounded-md shadow-xl z-50 py-1">
           {items.map((item) => (
             <Link
-              prefetch
               key={item.href} href={item.href}
               className={`block px-4 py-2 rounded-sm  mt-1 text-sm transition-colors ${
                 pathname === item.href ? "text-white bg-primary-gradient" : "text-gray-300 hover:text-white"
@@ -151,9 +149,9 @@ const Navbar = ({ onOpenSidebar }: { onOpenSidebar?: () => void }) => {
 
         {/* Right — icons + user */}
         <div className="flex items-center gap-3 md:gap-4 text-gray-300">
-          <button className="hidden md:block hover:text-white transition-colors" aria-label="Display settings">
+          <Link href="/shop" className="hidden md:block hover:text-white transition-colors" aria-label="Display settings">
             <span className="relative text-xl"><Store /></span>
-          </button>
+          </Link>
 
           <button className="hover:text-white transition-colors" aria-label="Bonuses">
             <span className="relative text-xl">

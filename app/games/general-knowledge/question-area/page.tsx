@@ -11,6 +11,7 @@ import pause from "@/public/images/icons/pause.png";
 import Image from "next/image";
 import coach from "@/public/images/Slider/coach.png";
 import { Questions } from "@/utils/dummyQuizData";
+import { useRouter } from "next/navigation";
 
 const Duration = 60;
 
@@ -23,6 +24,8 @@ export default function QuestionAreaPage() {
   const [streak, setStreak] = useState(0);
   const [gems, setGems] = useState(20);
   const [isFinished, setIsFinished] = useState(false);
+  const [countdown, setCountdown] = useState(10); // pre-quiz countdown
+  const router = useRouter();
 
   // Power-up used counts (for summary)
   const [freezeUsed, setFreezeUsed] = useState(0);
@@ -60,6 +63,13 @@ export default function QuestionAreaPage() {
     setTimeLeft(Duration);
   };
 
+  // Quiz countdown (10 → 0), then quiz starts
+  useEffect(() => {
+    if (countdown <= 0) return;
+    const t = setTimeout(() => setCountdown((prev) => prev - 1), 1000);
+    return () => clearTimeout(t);
+  }, [countdown]);
+
   // Reset the guard whenever the question changes
   useEffect(() => {
     Ref.current = false;
@@ -71,9 +81,9 @@ export default function QuestionAreaPage() {
     isPausedRef.current = isPaused;
   }, [isPaused]);
 
-  // Timer — uses a plain local counter to avoid stale-closure issues
+  // Timer — only starts after pre-quiz countdown finishes
   useEffect(() => {
-    if (isFinished) return;
+    if (isFinished || countdown > 0) return;
 
     let remaining = Duration;
     setTimeLeft(Duration);
@@ -90,7 +100,7 @@ export default function QuestionAreaPage() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [currentIndex, isFinished]);
+  }, [currentIndex, isFinished, countdown]);
 
   const handleOptionClick = (option: string) => {
     if (selectedOption !== null) return; // already answered
@@ -112,7 +122,7 @@ export default function QuestionAreaPage() {
   };
 
   // Power-up handlers
-  const handleFreeze = () => {
+    const handleFreeze = () => {
     if (activePowerUp !== null || selectedOption !== null) return;
     setActivePowerUp("freeze");
     setFreezeActive(true);
@@ -148,6 +158,7 @@ export default function QuestionAreaPage() {
     setFreezeActive(false);
     setIsPaused(false);
     setActivePowerUp(null);
+    setCountdown(10);
   };
 
   // Option color
@@ -183,7 +194,18 @@ export default function QuestionAreaPage() {
 
   return (
     <>
-      {/* Modal */}
+      {/* Pre-quiz countdown screen */}
+      {countdown > 0 && (
+        <div className="fixed inset-0 backdrop-blur-xl z-40 flex flex-col items-center justify-center gap-6">
+          <p className="text-zinc-400 text-lg tracking-widest uppercase">Quiz starts in</p>
+          <div className="w-36 h-36 rounded-full border-4 border-[#0098FF] flex items-center justify-center shadow-[0_0_40px_#0098FF55]">
+            <span className="text-white text-7xl font-bold">{countdown}</span>
+          </div>
+          <p className="text-zinc-500 text-sm">Get ready!</p>
+        </div>
+      )}
+
+      {/* Quiz Summary Modal */}
       {isFinished && (
         <div className="fixed inset-0 z-50 flex items-center justify-center  backdrop-blur-xs p-2">
           <div className="bg-primary-gradient rounded-2xl border-4 border-blue-500 p-4 text-center max-w-xl w-full shadow-2xl">
@@ -203,8 +225,11 @@ export default function QuestionAreaPage() {
               ))}
             </div>
             <div className="flex gap-2">
-              <button className="bg-blue-500  hover:bg-[#0060cc] border border-white text-white font-semibold py-2 px-10 rounded-xl transition-all w-full">
-                LeaderBoeard
+              <button
+                onClick={() => router.push("/games/general-knowledge/leaderboard")}
+                className="bg-blue-500 hover:bg-[#0060cc] border border-white text-white font-semibold py-2 px-10 rounded-xl transition-all w-full"
+              >
+                Leaderboard
               </button>
               <button
                 onClick={handlePlayAgain}
@@ -216,7 +241,7 @@ export default function QuestionAreaPage() {
           </div>
         </div>
       )}
-      <main className="min-h-screen bg-black md:px-20 p-2">
+      <main className="min-h-screen md:px-20 p-2">
         {/* Question progress */}
         <p className="text-zinc-400 text-xs text-center mb-3">
           Question {currentIndex + 1} / {totalQuestions}
