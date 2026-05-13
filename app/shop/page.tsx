@@ -9,8 +9,8 @@ import pass from "@/public/images/icons/pass.png";
 import pause from "@/public/images/icons/pause.png";
 import heart from "@/public/images/icons/red.png";
 import { StaticImageData } from "next/image";
-import { FiChevronLeft, FiArrowRight } from "react-icons/fi";
 import { RiVipDiamondFill } from "react-icons/ri";
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 
 const GemsData = [
   { amount: 100, price: "$20", label: "Best Value" },
@@ -62,6 +62,7 @@ const CountUpdate = ({
 
 const Shop = () => {
   const [quantities, setQuantities] = useState<number[]>(TokensData.map(() => 0));
+  const [gemQty, setGemQty] = useState<number[]>(GemsData.map(() => 0));
   const [showCart, setShowCart] = useState(false);
 
   const increment = (i: number) =>
@@ -69,23 +70,34 @@ const Shop = () => {
   const decrement = (i: number) =>
     setQuantities((prev) => prev.map((q, idx) => (idx === i ? Math.max(0, q - 1) : q)));
 
+  const incrementGem = (i: number) =>
+    setGemQty((prev) => prev.map((q, idx) => (idx === i ? q + 1 : q)));
+  const decrementGem = (i: number) =>
+    setGemQty((prev) => prev.map((q, idx) => (idx === i ? Math.max(0, q - 1) : q)));
+
   const cartItems = TokensData.map((t, i) => ({ ...t, qty: quantities[i] })).filter((t) => t.qty > 0);
-  const totalQty   = cartItems.reduce((s, t) => s + t.qty, 0);
+  const cartGems  = GemsData.map((g, i) => ({ ...g, qty: gemQty[i] })).filter((g) => g.qty > 0);
+
+  const totalQty   = cartItems.reduce((s, t) => s + t.qty, 0) + cartGems.reduce((s, g) => s + g.qty, 0);
   const totalGems  = cartItems.reduce((s, t) => s + t.gems  * t.qty, 0);
   const totalCoins = cartItems.reduce((s, t) => s + t.coins * t.qty, 0);
+  // const totalGemAmount = cartGems.reduce((s, g) => s + g.amount * g.qty, 0);
+  const totalGemPrice  = cartGems.reduce((s, g) => s + parseFloat(g.price.replace("$", "")) * g.qty, 0);
+
+  const hasCartItems = cartItems.length > 0 || cartGems.length > 0;
 
 // View Cart 
   if (showCart) {
     return (
       <div className="py-10 lg:px-14 px-6">
         {/* Back + heading */}
-        <button
-          onClick={() => setShowCart(false)}
-          className="flex items-center gap-2 text-white hover:text-blue-400 transition-colors mb-2"
+        <div
+        
+          className="flex items-center gap-2 text-white transition-colors mb-2"
         >
-          <FiChevronLeft size={22} />
+          <ChevronLeft   onClick={() => setShowCart(false)} size={24} className="bg-blue-400 rounded-full hover:bg-blue-800 " />
           <h1 className="text-3xl font-bold">View Cart</h1>
-        </button>
+        </div>
         <p className="text-zinc-400 text-sm mb-8">
           Boost your quiz power! Gems and tokens are in the cart, time to choose your payment mode.
         </p>
@@ -93,39 +105,84 @@ const Shop = () => {
         <div className="flex flex-col lg:flex-row gap-8">
           {/*Left Section*/}
           <div className="flex-1 space-y-3">
-            <p className="text-white font-semibold mb-2">Tokens</p>
-            {cartItems.map((token, i) => {
-              const origIdx = TokensData.findIndex((t) => t.name === token.name);
-              return (
-                <div
-                  key={i}
-                  className="flex items-center justify-between bg-[#0a0f1e] border border-[#1e3a6e] rounded-2xl px-5 py-4 relative"
-                >
-                  {/* Icon + name + price */}
-                  <div className="flex items-center gap-4">
-                    <div className="w-16 shrink-0">
-                      <Image src={token.icon} alt={token.name} className="w-full h-full object-contain" />
-                    </div>
-                    <div>
-                      <p className="text-white font-bold text-xl">{token.name}</p>
-                      <div className="flex items-center gap-1 text-2xl font-semibold mt-0.5">
-                        <RiVipDiamondFill className="text-blue-400" />
-                        <span className="text-white">{token.gems * token.qty}</span>
-                        <span className="text-zinc-500 mx-1">/</span>
-                        <span>💰</span>
-                        <span className="text-white">{token.coins * token.qty}</span>
+            {/* Gems in cart */}
+            {cartGems.length > 0 && (
+              <>
+                <p className="text-white font-semibold mb-2">Gems</p>
+                {cartGems.map((gem, i) => {
+                  const origIdx = GemsData.findIndex(
+                    (g) => g.amount === gem.amount && g.price === gem.price
+                  );
+                  return (
+                    <div
+                      key={i}
+                      className="flex items-center justify-between bg-[#0a0f1e] border border-[#1e3a6e] rounded-2xl px-5 py-4"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="w-14 shrink-0">
+                          <Image src={diamond} alt="gem" className="w-full h-full object-contain" />
+                        </div>
+                        <div>
+                          <p className="text-white font-bold text-xl">{gem.amount} Gems</p>
+                          <div className="flex items-center gap-1 text-lg font-semibold mt-0.5">
+                            <span className="text-zinc-400 text-sm">Unit price:</span>
+                            <span className="text-white ml-1">{gem.price}</span>
+                            <span className="text-zinc-500 mx-1">·</span>
+                            <span className="text-white">
+                              ${(parseFloat(gem.price.replace("$", "")) * gem.qty).toFixed(0)} total
+                            </span>
+                          </div>
+                        </div>
                       </div>
+                      <CountUpdate
+                        value={gem.qty}
+                        onAdd={() => incrementGem(origIdx)}
+                        onMinus={() => decrementGem(origIdx)}
+                      />
                     </div>
-                  </div>
-                  {/* CountUpdate */}
-                  <CountUpdate
-                    value={token.qty}
-                    onAdd={() => increment(origIdx)}
-                    onMinus={() => decrement(origIdx)}
-                  />
-                </div>
-              );
-            })}
+                  );
+                })}
+              </>
+            )}
+
+            {/* Tokens in cart */}
+            {cartItems.length > 0 && (
+              <>
+                <p className="text-white font-semibold mb-2 mt-4">Tokens</p>
+                {cartItems.map((token, i) => {
+                  const origIdx = TokensData.findIndex((t) => t.name === token.name);
+                  return (
+                    <div
+                      key={i}
+                      className="flex items-center justify-between bg-[#0a0f1e] border border-[#1e3a6e] rounded-2xl px-5 py-4 relative"
+                    >
+                      {/* Icon + name + price */}
+                      <div className="flex items-center gap-4">
+                        <div className="w-16 shrink-0">
+                          <Image src={token.icon} alt={token.name} className="w-full h-full object-contain" />
+                        </div>
+                        <div>
+                          <p className="text-white font-bold text-xl">{token.name}</p>
+                          <div className="flex items-center gap-1 text-2xl font-semibold mt-0.5">
+                            <RiVipDiamondFill className="text-blue-400" />
+                            <span className="text-white">{token.gems * token.qty}</span>
+                            <span className="text-zinc-500 mx-1">/</span>
+                            <span>💰</span>
+                            <span className="text-white">{token.coins * token.qty}</span>
+                          </div>
+                        </div>
+                      </div>
+                      {/* CountUpdate */}
+                      <CountUpdate
+                        value={token.qty}
+                        onAdd={() => increment(origIdx)}
+                        onMinus={() => decrement(origIdx)}
+                      />
+                    </div>
+                  );
+                })}
+              </>
+            )}
           </div>
 
           {/*Right Section*/}
@@ -139,15 +196,31 @@ const Shop = () => {
                 <span className="text-right">Total</span>
               </div>
 
-              {/* Rows */}
+              {/* Gem rows */}
+              {cartGems.map((gem, i) => (
+                <div key={`gem-${i}`} className="grid grid-cols-3 px-4 py-2">
+                  <div className="flex items-center gap-2">
+                    <Image src={diamond} alt="" width={18} height={18} className="object-contain" />
+                    <span className="text-white">{gem.amount} Gems</span>
+                  </div>
+                  <span className="text-white text-center">{gem.qty}</span>
+                  <div className="flex items-center justify-end gap-1 font-semibold">
+                    <span className="text-white">
+                      ${(parseFloat(gem.price.replace("$", "")) * gem.qty).toFixed(0)}
+                    </span>
+                  </div>
+                </div>
+              ))}
+
+              {/* Token rows */}
               {cartItems.map((token, i) => (
-                <div key={i} className="grid grid-cols-3 px-4 py-2  text-sm">
+                <div key={`token-${i}`} className="grid grid-cols-3 px-4 py-2 ">
                   <div className="flex items-center gap-2">
                     <Image src={token.icon} alt="" width={18} height={18} className="object-contain" />
-                    <span className="text-white text-xs">{token.name}</span>
+                    <span className="text-white ">{token.name}</span>
                   </div>
                   <span className="text-white text-center">{token.qty}</span>
-                  <div className="flex items-center justify-end gap-1 text-xs font-semibold">
+                  <div className="flex items-center justify-end gap-1  font-semibold">
                     <RiVipDiamondFill className="text-blue-400" />
                     <span className="text-white">{token.gems * token.qty}</span>
                     <span className="text-zinc-500">/</span>
@@ -158,15 +231,22 @@ const Shop = () => {
               ))}
 
               {/* Total row */}
-              <div className="grid grid-cols-3 mx-4 mt-2  py-2 border-dashed border-t  text-sm font-bold">
+              <div className="grid grid-cols-3 mx-4 mt-2 py-2 border-dashed border-t font-bold">
                 <span className="text-white">Total</span>
                 <span className="text-white text-center">{totalQty}</span>
-                <div className="flex items-center justify-end gap-1 text-xs font-bold">
-                  <RiVipDiamondFill className="text-blue-400" />
-                  <span className="text-white">{totalGems}</span>
-                  <span className="text-zinc-500">/</span>
-                  <span>💰</span>
-                  <span className="text-white">{totalCoins}</span>
+                <div className="flex flex-col items-end gap-0.5 font-bold">
+                  {totalGemPrice > 0 && (
+                    <span className="text-white">${totalGemPrice.toFixed(0)}</span>
+                  )}
+                  {(totalGems > 0 || totalCoins > 0) && (
+                    <div className="flex items-center gap-1">
+                      <RiVipDiamondFill className="text-blue-400" />
+                      <span className="text-white">{totalGems}</span>
+                      <span className="text-zinc-500">/</span>
+                      <span>💰</span>
+                      <span className="text-white">{totalCoins}</span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -176,12 +256,12 @@ const Shop = () => {
               <button className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-linear-to-r from-[#0098FF] to-[#0060cc] hover:brightness-110 transition-all text-white font-semibold text-sm">
                 <RiVipDiamondFill />
                 Pay with Gems
-                <FiArrowRight />
+                <ArrowRight size={20} />
               </button>
               <button className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-linear-to-r from-[#0098FF] to-[#0060cc] hover:brightness-110 transition-all text-white font-semibold text-sm">
                 <span>💰</span>
                 Pay with Money
-                <FiArrowRight />
+                <ArrowRight size={20} />
               </button>
             </div>
           </div>
@@ -196,7 +276,7 @@ const Shop = () => {
       {/* Hero */}
       <div className="flex flex-col lg:flex-row lg:justify-between gap-3">
         <div className="w-full h-44 rounded-2xl bg-red-300 overflow-hidden">
-          <Image src={gems} alt="" className="object-cover w-full h-full" />
+          <Image  src={gems} alt="" className="object-cover w-full h-full" />
         </div>
         <div className="text-end lg:w-300 space-y-3">
           <h1 className="text-5xl font-bold">
@@ -216,30 +296,40 @@ const Shop = () => {
           Use gems to buy life, pause, pass, and other boosts. The more gems you have, the stronger your game becomes.
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-10">
-          {GemsData.map((item, i) => (
-            <div key={i} className="border border-zinc-600 p-1 rounded-2xl relative">
-              <div className="w-16 absolute z-20 -top-8 -left-5 -rotate-45">
-                <Image src={diamond} alt="" />
-              </div>
-              <div className="relative bg-black rounded-2xl border border-zinc-800 p-4 pt-10 flex flex-col overflow-hidden">
-                <span className="absolute top-3 right-3 bg-zinc-800 text-white text-[15px] font-semibold px-2 py-0.5 rounded-lg">
-                  SAVE 20%
-                </span>
-                <div>
-                  <p className="text-white text-5xl font-black leading-none">
-                    {item.amount} <span className="text-base font-semibold">Gems</span>
-                  </p>
-                  <p className="text-zinc-500 text-[10px] mt-0.5">{item.label}</p>
+          {GemsData.map((item, i) => {
+            const qty = gemQty[i];
+            return (
+              <div key={i} className={`border p-1 rounded-2xl relative transition-all duration-300 ${qty > 0 ? "border-blue-500 shadow-[0_0_18px_rgba(0,152,255,0.45)]" : "border-zinc-600"}`}>
+                <div className="w-16 absolute z-20 -top-8 -left-5 -rotate-45">
+                  <Image src={diamond} alt="" />
                 </div>
-                <div className="flex items-center mt-1 justify-between">
-                  <span className="text-white text-4xl font-black">{item.price}</span>
-                  <button className="bg-linear-to-r from-[#6366f1] to-[#8b5cf6] hover:brightness-110 text-white pt-1 h-10 font-semibold px-6 rounded-full transition-all">
-                    BUY NOW
-                  </button>
+                <div className="relative bg-black rounded-2xl border border-zinc-800 p-4 pt-10 flex flex-col overflow-hidden">
+                  <span className="absolute top-3 right-3 bg-zinc-800 text-white text-[15px] font-semibold px-2 py-0.5 rounded-lg">
+                    SAVE 20%
+                  </span>
+                  <div>
+                    <p className="text-white text-5xl font-black leading-none">
+                      {item.amount} <span className="text-base font-semibold">Gems</span>
+                    </p>
+                    <p className="text-zinc-500 text-[10px] mt-0.5">{item.label}</p>
+                  </div>
+                  <div className="flex items-center mt-3 justify-between">
+                    <span className="text-white text-4xl font-black">{item.price}</span>
+                    {qty === 0 ? (
+                      <button
+                        onClick={() => incrementGem(i)}
+                        className="bg-linear-to-r from-[#6366f1] to-[#8b5cf6] hover:brightness-110 text-white pt-1 h-10 font-semibold px-6 rounded-full transition-all"
+                      >
+                        BUY NOW
+                      </button>
+                    ) : (
+                      <CountUpdate value={qty} onAdd={() => incrementGem(i)} onMinus={() => decrementGem(i)} />
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
@@ -296,19 +386,18 @@ const Shop = () => {
         })}
 
       {/* View Cart sticky bar — appears when cart has items */}
-      {cartItems.length > 0 && (
+      {hasCartItems && (
         <div className="">
           <button
             onClick={() => setShowCart(true)}
             className="flex items-center gap-3 bg-linear-to-r from-[#0098FF] to-[#0060cc] hover:brightness-110 transition-all text-white font-bold px-8 py-3 rounded-full shadow-[0_0_24px_rgba(0,152,255,0.6)]"
           >
             View Cart
-            <FiArrowRight />
+           <ChevronRight/>
           </button>
         </div>
       )}
       </div>
-
     </div>
   );
 };
