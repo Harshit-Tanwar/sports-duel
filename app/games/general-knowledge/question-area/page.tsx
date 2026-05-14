@@ -158,7 +158,6 @@ export default function QuestionAreaPage() {
     setFreezeActive(false);
     setIsPaused(false);
     setActivePowerUp(null);
-    setCountdown(10);
   };
 
   // Option color
@@ -194,23 +193,12 @@ export default function QuestionAreaPage() {
 
   return (
     <>
-      {/* Pre-quiz countdown screen */}
-      {countdown > 0 && (
-        <div className="fixed inset-0 backdrop-blur-xl z-40 flex flex-col items-center justify-center gap-6">
-          <p className="text-zinc-400 text-lg tracking-widest uppercase">Quiz starts in</p>
-          <div className="w-36 h-36 rounded-full border-4 border-[#0098FF] flex items-center justify-center shadow-[0_0_40px_#0098FF55]">
-            <span className="text-white text-7xl font-bold">{countdown}</span>
-          </div>
-          <p className="text-zinc-500 text-sm">Get ready!</p>
-        </div>
-      )}
-
       {/* Quiz Summary Modal */}
       {isFinished && (
         <div className="fixed inset-0 z-50 flex items-center justify-center  backdrop-blur-xs p-2">
           <div className="bg-primary-gradient rounded-2xl border-4 border-blue-500 p-4 text-center max-w-xl w-full shadow-2xl">
             <h1 className="text-white text-3xl  mb-2">Quiz Summary</h1>
-            <div className="grid grid-cols-2 gap-3 mb-8">
+            <div className="grid lg:grid-cols-2 gap-3 mb-8">
               {results.map((result) => (
                 <div
                   key={result.id}
@@ -224,16 +212,16 @@ export default function QuestionAreaPage() {
                 </div>
               ))}
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 text-sm  text-white font-semibold">
               <button
                 onClick={() => router.push("/games/general-knowledge/leaderboard")}
-                className="bg-blue-500 hover:bg-[#0060cc] border border-white text-white font-semibold py-2 px-10 rounded-xl transition-all w-full"
+                className="bg-blue-500 hover:bg-[#0060cc] border border-white lg:py-2 px-10 rounded-xl transition-all w-full"
               >
                 Leaderboard
               </button>
               <button
                 onClick={handlePlayAgain}
-                className="bg-blue-500  hover:bg-[#0060cc] border border-white text-white font-semibold py-2 px-10 rounded-xl transition-all w-full"
+                className="bg-blue-500  hover:bg-[#0060cc] border border-white lg:py-2 px-10 rounded-xl transition-all w-full"
               >
                 Play Again
               </button>
@@ -284,11 +272,13 @@ export default function QuestionAreaPage() {
           {/* Centre */}
           <div className="flex-1 rounded-2xl overflow-hidden relative min-h-50 md:min-h-65">
             {/* Question text */}
+             {countdown === 0 &&  
             <div className="relative z-10 bg-blue-800/40 px-4 py-2 border-b border-[#0098FF]/40">
               <p className="text-white text-sm md:text-base font-medium">
                 Q.{currentIndex + 1} {currentQuestion.question}
               </p>
             </div>
+              }
 
             {/* Image + Timer */}
             <div className="relative h-80 bg-zinc-500">
@@ -298,22 +288,34 @@ export default function QuestionAreaPage() {
                 priority
                 className="h-full w-full object-cover"
               />
-              {/* Timer badge */}
-              <div
-                className={`absolute bottom-2 right-3 z-30 w-16 h-16 rounded-full ${isPaused ? "bg-blue-500" : timerColor} flex flex-col items-center justify-center shadow-lg transition-colors duration-500`}
-              >
-                {isPaused ? (
-                  <>
+
+              {/* Pre-quiz countdown overlay on the image */}
+              {countdown > 0 && (
+                <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-3 bg-black/70">
+                  <p className="text-zinc-300 text-sm tracking-widest uppercase">Quiz starts in</p>
+                  <div className="w-28 h-28 rounded-full border-4 border-[#0098FF] flex items-center justify-center shadow-[0_0_40px_#0098FF88]">
+                    <span className="text-white text-6xl font-bold">{countdown}</span>
+                  </div>
+                  <p className="text-zinc-400 text-xs">Get ready!</p>
+                </div>
+              )}
+
+              {/* Timer badge — only shown after countdown */}
+              {countdown === 0 && (
+                <div
+                  className={`absolute bottom-2 right-3 z-30 w-16 h-16 rounded-full ${isPaused ? "bg-blue-500" : timerColor} flex flex-col items-center justify-center shadow-lg transition-colors duration-500`}
+                >
+                  {isPaused ? (
                     <span className="text-white text-[10px] font-bold leading-none">
                       PAUSED
                     </span>
-                  </>
-                ) : (
-                  <span className="text-white text-xs font-bold">
-                    {timeLeft}s
-                  </span>
-                )}
-              </div>
+                  ) : (
+                    <span className="text-white text-xs font-bold">
+                      {timeLeft}s
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
@@ -330,7 +332,8 @@ export default function QuestionAreaPage() {
             </div>
           </div>
         </div>
-        {/* Answer buttons */}
+        {/* Answer buttons — hidden during initial countdown */}
+        {countdown === 0 && (
         <div className="lg:px-50">
           <div className="grid lg:grid-cols-2 gap-3 mt-5">
             {currentQuestion.options.map((option) => (
@@ -397,6 +400,7 @@ export default function QuestionAreaPage() {
             />
           </div>
         </div>
+        )}
       </main>
     </>
   );
